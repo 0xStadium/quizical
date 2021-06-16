@@ -15,7 +15,9 @@ const app = express();
 app.use(express.static("public"));
 
 // bodyParser
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 // app sets view engine for ejs
 app.set('view engine', 'ejs');
@@ -37,10 +39,27 @@ mongoose.connect("mongodb://localhost:27017/userDB", {
   useUnifiedTopology: true
 });
 
+// schema for flashCard
+const flashCardSchema = new mongoose.Schema({
+  term: String,
+  definition: String
+});
+
+const FlashCard = mongoose.model("FlashCard", flashCardSchema);
+
+// schema for studySet
+const studySetSchema = new mongoose.Schema({
+  title: String,
+  flashCards: [flashCardSchema]
+});
+
+const StudySet = mongoose.model("StudySet", studySetSchema);
+
 // mongoose schema for user
 const userSchema = new mongoose.Schema({
   username: String,
-  password: String
+  password: String,
+  studySets: [studySetSchema]
 });
 
 // used to hash and salt passwords
@@ -62,12 +81,17 @@ function getLogin(req) {
 }
 
 app.get("/", function(req, res) {
-  res.render("home", {login: getLogin(req)});
+  res.render("home", {
+    login: getLogin(req)
+  });
 });
 
 app.route("/register")
   .get(function(req, res) {
-    res.render("register", {errorMsg: "", login: getLogin(req)});
+    res.render("register", {
+      errorMsg: "",
+      login: getLogin(req)
+    });
   })
   .post(function(req, res) {
 
@@ -85,59 +109,112 @@ app.route("/register")
     // checks if passwords are equal
     if (password === password2) {
       // checks if the username exists creates an account if it doesn't exist
-      User.findOne({username: username}, function(err, foundUser) {
+      User.findOne({
+        username: username
+      }, function(err, foundUser) {
         if (err) {
           console.log(err);
-          res.render("register", {errorMsg: ""});
+          res.render("register", {
+            errorMsg: ""
+          });
         } else if (foundUser) {
           // send error message username already exists
-          res.render("register", {errorMsg: "Username already exists", login: getLogin(req)});
+          res.render("register", {
+            errorMsg: "Username already exists",
+            login: getLogin(req)
+          });
         } else {
           // register, authenticate and redirect
-          User.register({username: username}, password, function(err, user) {
+          User.register({
+            username: username
+          }, password, function(err, user) {
             if (err) {
               console.log(err);
-              res.render("register", {errorMsg: "", login: getLogin(req)});
+              res.render("register", {
+                errorMsg: "",
+                login: getLogin(req)
+              });
             } else {
-              passport.authenticate("local")(req, res, function(){
-                res.redirect("/");
+              passport.authenticate("local")(req, res, function() {
+                res.redirect("/latest");
               });
             }
           });
         }
       });
     } else {
-      res.render("register", {errorMsg: "Passwords are not same", login: getLogin(req)});
+      res.render("register", {
+        errorMsg: "Passwords are not same",
+        login: getLogin(req)
+      });
     }
   });
 
-app.get("/creation", function(req, res){
+// page for logged in users, shows their studysets
+app.route("/latest")
+  .get(function(req, res) {
+    if (req.isAuthenticated()) {
+      console.log(req.user);
+      User.findOne({
+        username: req.user.username
+      }, function(err, foundUser) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.render("latest", {
+            studySets: foundUser.studySets,
+            login: getLogin(req)
+          });
+        }
+      });
+    } else {
+      res.redirect("/login");
+    }
+  });
+
+
+// page for creating study sets
+app.get("/creation", function(req, res) {
   if (req.isAuthenticated()) {
-    res.render("creation", {login: getLogin(req)});
+    res.render("creation", {
+      login: getLogin(req)
+    });
   } else {
-    res.render("login", {login: getLogin(req)});
+    res.render("login", {
+      errorMsg: "",
+      login: getLogin(req)
+    });
   }
 });
 
 app.route("/login")
   .get(function(req, res) {
     if (req.isAuthenticated()) {
-      res.redirect("/");
+      res.redirect("/latest");
     } else {
-      res.render("login", {login: getLogin(req)});
+      res.render("login", {
+        errorMsg: "",
+        login: getLogin(req)
+      });
     }
   })
   .post(function(req, res) {
-    User.findOne({username: req.body.username}, function(err, foundUser) {
+    User.findOne({
+      username: req.body.username
+    }, function(err, foundUser) {
       if (err) {
         console.log(err);
       } else if (foundUser) {
-        if (req.isAuthenticated()) {
-
-        }
+        // login and authenticate
+        passport.authenticate("local")(req, res, function() {
+          res.redirect("/latest");
+        });
       } else {
         // Username or Password is wrong
-        res.render("login", {errorMsg: "Username or Password is wrong", login: getLogin(req)});
+        res.render("login", {
+          errorMsg: "Username or Password is wrong",
+          login: getLogin(req)
+        });
       }
     });
   });
@@ -148,6 +225,10 @@ app.get("/logout", function(req, res) {
   res.redirect("/");
 });
 
+
+app.get("/create", function(req, res) {
+
+});
 
 app.listen(3000, function() {
   console.log("Server started on port 3000");
