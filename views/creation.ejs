@@ -2,49 +2,52 @@
 
 <br>
 <br>
-<form class="container">
+<form class="container" action="/creation" method="POST">
   <div class="mb-3">
     <label for="exampleFormControlInput1" class="form-label">Title</label>
     <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Enter Title">
   </div>
 
-
-  <h5>i</h5>
-  <div class="mb-3">
-    <label for="exampleFormControlInput1" class="form-label">Term</label>
-    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Enter Term">
-  </div>
-  <div class="mb-3">
-    <label for="exampleFormControlTextarea1" class="form-label">Definition</label>
-    <textarea class="form-control" id="exampleFormControlTextarea1" rows="2" placeholder="Enter Definition"></textarea>
-  </div>
-
-
-  <div class="mb-3">
+  <div class="mb-3" id="addCardDiv">
     <button id="addCardBtn" class="btn btn-primary my-2">Add Card</button>
   </div>
+
   <button type="submit" class="btn btn-primary btn-lg">Create Set</button>
 </form>
+
 
 <br>
 <br>
 
 <script type="text/javascript">
-  // let numCards = 1;
-  // $(document).ready(function() {
-  //   $("addCardBtn").click(function() {
-  //
-  //   });
-  // });
-  // let numCards = 1;
-  // while (numCards <= 6) {
-  //   addCard();
-  // };
-  //
-  // function addCard() {
-  //
-  //   numCards++;
-  // };
+  // forms 6 initial empty cards
+  let numCards = 1;
+  while (numCards <= 6) {
+    addCard();
+  };
+
+  // adds an extra empty card
+  function addCard() {
+    let card = document.createElement("div");
+    card.className = "ithCard";
+    card.innerHTML =
+      "<h5>" + numCards + "</h5>" +
+      "<div class='mb-3'>" +
+      "<label for='exampleFormControlInput1' class='form-label'>Term</label>" +
+      "<input type='email' class='form-control' id='exampleFormControlInput1' placeholder='Enter Term'>" +
+      "</div>" +
+      "<div class='mb-3'>" +
+      "<label for='exampleFormControlTextarea1' class='form-label'>Definition</label>" +
+      "<textarea class='form-control' id='exampleFormControlTextarea1' rows='2' placeholder='Enter Definition'></textarea>" +
+      "</div>";
+
+    let addCardDiv = document.getElementById('addCardDiv');
+    addCardDiv.parentNode.insertBefore(card, addCardDiv);
+    numCards++;
+  };
+
+  document.getElementById("addCardBtn").addEventListener("click", addCard);
+
 </script>
 
 <%- include("partials/footer") -%>

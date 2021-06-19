@@ -174,18 +174,24 @@ app.route("/latest")
 
 
 // page for creating study sets
-app.get("/creation", function(req, res) {
-  if (req.isAuthenticated()) {
-    res.render("creation", {
-      login: getLogin(req)
-    });
-  } else {
-    res.render("login", {
-      errorMsg: "",
-      login: getLogin(req)
-    });
-  }
-});
+app.route("/creation")
+  .get(function(req, res) {
+    if (req.isAuthenticated()) {
+      res.render("creation", {
+        login: getLogin(req)
+      });
+    } else {
+      res.render("login", {
+        errorMsg: "",
+        login: getLogin(req)
+      });
+    }
+  })
+  .post(function(req, res) {
+    console.log("creation post");
+  });
+
+
 
 app.route("/login")
   .get(function(req, res) {
@@ -223,11 +229,6 @@ app.get("/logout", function(req, res) {
   req.logout();
   req.session.destroy();
   res.redirect("/");
-});
-
-
-app.get("/create", function(req, res) {
-
 });
 
 app.listen(3000, function() {
