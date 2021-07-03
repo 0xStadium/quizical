@@ -39,18 +39,13 @@ mongoose.connect("mongodb://localhost:27017/userDB", {
   useUnifiedTopology: true
 });
 
-// schema for flashCard
-const flashCardSchema = new mongoose.Schema({
-  term: String,
-  definition: String
-});
-
-const FlashCard = mongoose.model("FlashCard", flashCardSchema);
-
 // schema for studySet
 const studySetSchema = new mongoose.Schema({
   title: String,
-  flashCards: [flashCardSchema]
+  flashCards: [{
+    term: String,
+    termDef: String
+  }]
 });
 
 const StudySet = mongoose.model("StudySet", studySetSchema);
@@ -188,7 +183,58 @@ app.route("/creation")
     }
   })
   .post(function(req, res) {
-    // console.log("creation post");
+    if (req.isAuthenticated()) {
+
+      let data = Object.values(req.body);
+
+      const title = data.shift();
+      let cardList = [];
+      for (let i = 0; i < data.length; i+=2) {
+        if (data[i] != '' && data[i + 1] != '') {
+          // add to list
+          cardList.push({
+            "term": data[i],
+            "termDef": data[i + 1]
+          });
+        }
+      }
+
+      // create StudySet
+      const studySet = new StudySet({
+        title: title,
+        flashCards: cardList
+      });
+
+      studySet.save();
+
+      // push studySet to user
+      User.updateOne(
+        { _id: req.user.id },
+        { $push: {studySets: studySet} },
+        function(err){
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Succesfully updated User studyset");
+            console.log(req.user.id);
+          }
+        });
+
+      // redirect to newly created studySet
+
+      //res.send(cardList);
+
+      res.render("studyset", {
+        cardList: cardList,
+        login: getLogin(req)
+      });
+
+    } else {
+      res.render("login", {
+        errorMsg: "",
+        login: getLogin(req)
+      });
+    }
   });
 
 

@@ -3,15 +3,15 @@
 <br>
 <br>
 
-<form name="setForm" class="container" action="/latest" onsubmit="return validateForm()" method="POST">
+<form name="setForm" class="container" action="/creation" onsubmit="return validateForm()" method="POST">
   <div class="mb-3">
     <label for="exampleFormControlInput1" class="form-label">Title</label>
-    <input type="text" class="form-control" id="titleInput" placeholder="Enter Title">
+    <input type="text" class="form-control" id="titleInput" name="title" placeholder="Enter Title">
     <h5 class="error-msg" id="titleErrorMsg" style="visibility: hidden">Please enter a title to create your set</h5>
   </div>
 
   <div class="mb-3" id="addCardDiv">
-    <button id="addCardBtn" class="btn btn-primary my-2">Add Card</button>
+    <button type="button" id="addCardBtn" class="btn btn-primary my-2">Add Card</button>
   </div>
 
   <button type="submit" class="btn btn-primary btn-lg">Create Set</button>
@@ -36,13 +36,13 @@
 
       "<div class='mb-3'>" +
       "<label for='exampleFormControlTextarea1' class='form-label'>Term</label>" +
-      "<textarea class='form-control' id='exampleFormControlTextarea1' rows='1' placeholder='Enter Term'></textarea>" +
+      "<textarea name='" + "term" + numCards + "'  class='form-control' id='exampleFormControlTextarea1' rows='1' placeholder='Enter Term'></textarea>" +
       "<h5 class='error-msg' style='visibility: hidden'>Please enter a term</h5>" +
       "</div>" +
 
       "<div class='mb-3'>" +
       "<label for='exampleFormControlTextarea1' class='form-label'>Definition</label>" +
-      "<textarea class='form-control' id='exampleFormControlTextarea1' rows='2' placeholder='Enter Definition'></textarea>" +
+      "<textarea name='" + "termDef" + numCards + "'   class='form-control' id='exampleFormControlTextarea1' rows='2' placeholder='Enter Definition'></textarea>" +
       "<h5 class='error-msg' style='visibility: hidden'>Please enter a definition</h5>" +
       "</div>";
 
@@ -88,11 +88,14 @@
       termErr.style.visibility = "hidden";
       termDefErr.style.visibilty = "hidden";
 
+      console.log(i, term, termDef, cardList.length);
+
       // checks if the each card has a term and definition
       if (term != "" && termDef != "") {
+
         // push this card into the cardList
         cardList.push({
-          "term": termDef,
+          "term": term,
           "termDef": termDef
         });
       } else if (term == "" && termDef != "") {
@@ -108,7 +111,11 @@
     if (cardList.length === 0) {
       validateBool = false;
       console.log("needs at least 1 card");
+    } else {
+      validateBool = true;
     }
+
+    console.log(validateBool);
 
     return validateBool;
   };
