@@ -158,7 +158,8 @@ app.route("/latest")
         } else {
           res.render("latest", {
             studySets: foundUser.studySets,
-            login: getLogin(req)
+            login: getLogin(req),
+            username: foundUser.username
           });
         }
       });
@@ -220,9 +221,6 @@ app.route("/creation")
           }
         });
 
-      // redirect to newly created studySet
-
-      //res.send(cardList);
 
       res.render("studyset", {
         cardList: cardList,
@@ -273,7 +271,26 @@ app.route("/login")
 
 
 // STUDYSET
+app.route("/studyset/:username/:title")
+  .get(function(req, res) {
 
+    let username = req.params.username;
+    let title = req.params.title;
+
+    User.findOne({ username: username }, function(err, foundUser) {
+        if (err) {
+          console.log(err);
+        } else if (foundUser) {
+          let studySet = foundUser.studySets.filter(obj => {
+            return obj.title === title;
+          });
+          res.render("studyset", {
+            stitle: studySet[0].title,
+            login: getLogin(req)
+          });
+        }
+      });
+  });
 
 
 

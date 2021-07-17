@@ -44,3 +44,9 @@ footer {
 .error-msg {
   color: red;
 }
+
+.latest-card {
+  cursor: pointer;
+  color: black;
+  text-decoration: none;
+}
