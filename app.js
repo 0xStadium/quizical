@@ -246,7 +246,7 @@ app.route("/creation")
         });
 
       res.render("studyset", {
-        cardList: cardList,
+        studySet: studySet,
         login: getLogin(req)
       });
     } else {
@@ -272,7 +272,7 @@ app.route("/studyset/:username/:title")
           });
           if (studySet.length !== 0) {
             res.render("studyset", {
-              stitle: studySet[0].title,
+              studySet: studySet[0],
               login: getLogin(req)
             });
           } else {
