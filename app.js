@@ -61,15 +61,15 @@ passport.deserializeUser(User.deserializeUser());
 // function that returns a boolean if the request is authenticated
 function getLogin(req) {
   if (req.isAuthenticated()) {
-    return true;
+    return req.user.username;
   }
-  return false;
+  return "";
 }
 
 // GET method route for homepage
 app.get("/", function(req, res) {
   res.render("home", {
-    login: getLogin(req)
+    username: getLogin(req)
   });
 });
 
@@ -81,7 +81,7 @@ app.route("/login")
     } else {
       res.render("login", {
         errorMsg: "",
-        login: getLogin(req)
+        username: getLogin(req)
       });
     }
   })
@@ -100,7 +100,7 @@ app.route("/login")
         // renders error Username or Password is wrong
         res.render("login", {
           errorMsg: "Username or Password is wrong",
-          login: getLogin(req)
+          username: getLogin(req)
         });
       }
     });
@@ -118,7 +118,7 @@ app.route("/register")
   .get(function(req, res) {
     res.render("register", {
       errorMsg: "",
-      login: getLogin(req)
+      username: getLogin(req)
     });
   })
   .post(function(req, res) {
@@ -139,13 +139,14 @@ app.route("/register")
         if (err) {
           console.log(err);
           res.render("register", {
-            errorMsg: ""
+            errorMsg: "",
+            username: getLogin(req)
           });
         } else if (foundUser) {
           // sends error message that username already exists
           res.render("register", {
             errorMsg: "Username already exists",
-            login: getLogin(req)
+            username: getLogin(req)
           });
         } else {
           // registers user, authenticates and redirect to latest page
@@ -156,7 +157,7 @@ app.route("/register")
               console.log(err);
               res.render("register", {
                 errorMsg: "",
-                login: getLogin(req)
+                username: getLogin(req)
               });
             } else {
               passport.authenticate("local")(req, res, function() {
@@ -170,7 +171,7 @@ app.route("/register")
       // sends error message if passwords not same
       res.render("register", {
         errorMsg: "Passwords are not same",
-        login: getLogin(req)
+        username: getLogin(req)
       });
     }
   });
@@ -187,7 +188,6 @@ app.route("/latest")
         } else {
           res.render("latest", {
             studySets: foundUser.studySets,
-            login: getLogin(req),
             username: foundUser.username
           });
         }
@@ -202,13 +202,10 @@ app.route("/creation")
   .get(function(req, res) {
     if (req.isAuthenticated()) {
       res.render("creation", {
-        login: getLogin(req)
+        username: getLogin(req)
       });
     } else {
-      res.render("login", {
-        errorMsg: "",
-        login: getLogin(req)
-      });
+      res.redirect("/login");
     }
   })
   .post(function(req, res) {
@@ -249,7 +246,6 @@ app.route("/creation")
         studySet: studySet,
         username: req.user.username,
         author: req.user.username,
-        login: getLogin(req)
       });
     } else {
       res.redirect("/login");
@@ -278,8 +274,7 @@ app.route("/studyset/:username/:title")
             res.render("studyset", {
               author: author,
               studySet: studySet[0],
-              username: username,
-              login: getLogin(req)
+              username: username
             });
 
           } else {

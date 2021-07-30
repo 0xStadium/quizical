@@ -26,11 +26,11 @@
             <a class="nav-link" href="/creation">Create</a>
           </li>
         </ul>
-        <% if (!login) { %>
+        <% if (username === "") { %>
           <a href="/register" class="navbar-text login-link">Sign Up</a>
           <a href="/login" class="navbar-text login-link">Log In</a>
         <% } else { %>
-          <a href="/latest" class="navbar-text login-link">Username</a>
+          <a href="/latest" class="navbar-text login-link"><%=username%></a>
           <a href="/logout" class="navbar-text login-link">Sign Out</a>
         <% } %>
       </div>
