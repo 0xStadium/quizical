@@ -14,6 +14,17 @@
     <button class="btn btn-primary" type="button" onclick="shuffleCards()">Shuffle</button>
   </div>
 </div>
+<div class="container mt-5">
+  <% if (username === author) { %>
+        <form class="" action="/delete" onsubmit="return confirm('Delete this study set?');" method="POST">
+          <input type="hidden" name="username" value="<%=username%>">
+          <input type="hidden" name="studySetId" value="<%=studySet._id%>">
+          <input type="hidden" name="studySetTitle" value="<%=studySet.title%>">
+          <button id="deleteSet" class="btn btn-danger" type="submit">Delete Set</button>
+        </form>
+  <% } %>
+</div>
+
 <script type="text/javascript">
   let studySet = <%-JSON.stringify(studySet)%>;
   let flashCards = shuffle(studySet.flashCards);

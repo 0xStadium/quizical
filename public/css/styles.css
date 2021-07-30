@@ -67,3 +67,7 @@ footer {
   min-height: 15em;
   justify-content: center;
 }
+
+#deleteSet {
+  color: white;
+}

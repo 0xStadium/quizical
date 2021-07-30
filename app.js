@@ -231,7 +231,7 @@ app.route("/creation")
         flashCards: cardList
       });
 
-      studySet.save();
+      // studySet.save();
 
       // push studySet to user
       User.updateOne(
@@ -247,23 +247,22 @@ app.route("/creation")
 
       res.render("studyset", {
         studySet: studySet,
+        username: req.user.username,
+        author: req.user.username,
         login: getLogin(req)
       });
     } else {
-      res.render("login", {
-        errorMsg: "",
-        login: getLogin(req)
-      });
+      res.redirect("/login");
     }
   });
 
 // studyset route handler
 app.route("/studyset/:username/:title")
   .get(function(req, res) {
-    let username = req.params.username;
+    let author = req.params.username;
     let title = req.params.title;
 
-    User.findOne({ username: username }, function(err, foundUser) {
+    User.findOne({ username: author }, function(err, foundUser) {
         if (err) {
           console.log(err);
         } else if (foundUser) {
@@ -271,10 +270,18 @@ app.route("/studyset/:username/:title")
             return obj.title === title;
           });
           if (studySet.length !== 0) {
+            let deleteAuth = true;
+            let username = "";
+            if (req.isAuthenticated()) {
+              username = req.user.username;
+            }
             res.render("studyset", {
+              author: author,
               studySet: studySet[0],
+              username: username,
               login: getLogin(req)
             });
+
           } else {
             res.redirect("/");
           }
@@ -283,6 +290,30 @@ app.route("/studyset/:username/:title")
         }
       });
   });
+
+// delete studySet handler
+app.post("/delete", function(req, res) {
+  if (req.isAuthenticated()) {
+    if (req.user.username === req.body.username) {
+      let setId = mongoose.Types.ObjectId(req.body.studySetId);
+      console.log(setId);
+      User.updateOne(
+        { username: req.body.username },
+        { $pull: {studySets: { title: req.body.studySetTitle }}},
+        function(err, foundUser) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Successful deletion of set from user: ", foundUser);
+          }
+        });
+
+      res.redirect("/latest");
+    }
+  } else {
+    res.redirect("/login");
+  }
+});
 
 app.listen(3000, function() {
   console.log("Server started on port 3000");
