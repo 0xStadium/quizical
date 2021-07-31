@@ -66,11 +66,15 @@ function getLogin(req) {
   return "";
 }
 
-// GET method route for homepage
+// homepage route handler
 app.get("/", function(req, res) {
-  res.render("home", {
-    username: getLogin(req)
-  });
+  if (req.isAuthenticated()) {
+    res.redirect("/latest");
+  } else {
+    res.render("home", {
+      username: getLogin(req)
+    });
+  }
 });
 
 // login page route handler
