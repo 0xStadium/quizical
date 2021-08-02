@@ -90,22 +90,41 @@ app.route("/login")
     }
   })
   .post(function(req, res) {
+    // check the DB to see if the username that was used to login exists in the DB
     User.findOne({
       username: req.body.username
     }, function(err, foundUser) {
-      if (err) {
-        console.log(err);
-      } else if (foundUser) {
-        // login and authenticate
-        passport.authenticate("local")(req, res, function() {
-          res.redirect("/latest");
+      // if username is found in the database, create an object called "user" that will store the username and password
+      // that was used to login
+      if (foundUser) {
+        const user = new User({
+          username: req.body.username,
+          password: req.body.password
         });
+        // use the "user" object that was just created to check against the username and password in the database
+        // in this case below, "user" will either return a "false" boolean value if it doesn't match, or it will
+        // return the user found in the database
+        passport.authenticate("local", function(err, user) {
+          if (err) {
+            console.log(err);
+          } else {
+            // this is the "user" returned from the passport.authenticate callback, which will be either
+            // a false boolean value if no it didn't match the username and password or
+            // a the user that was found, which would make it a truthy statement
+            if (user) {
+              // if true, then log the user in, else redirect to login page
+              req.login(user, function(err) {
+                res.redirect("/latest");
+              });
+            } else {
+              res.redirect("/login");
+            }
+          }
+        })(req, res);
+        // if no username is found at all, redirect to login page.
       } else {
-        // renders error Username or Password is wrong
-        res.render("login", {
-          errorMsg: "Username or Password is wrong",
-          username: getLogin(req)
-        });
+        // user does not exists
+        res.redirect("/login")
       }
     });
   });
@@ -217,7 +236,7 @@ app.route("/creation")
       let formDataList = Object.values(req.body); // turn the form values into an array
       const title = formDataList.shift();
       let cardList = []; // empty array for the term - definition pairs
-      for (let i = 0; i < formDataList.length; i+=2) {
+      for (let i = 0; i < formDataList.length; i += 2) {
         if (formDataList[i] != '' && formDataList[i + 1] != '') {
           cardList.push({
             "term": formDataList[i],
@@ -235,10 +254,14 @@ app.route("/creation")
       // studySet.save();
 
       // push studySet to user
-      User.updateOne(
-        { _id: req.user.id },
-        { $push: {studySets: studySet} },
-        function(err){
+      User.updateOne({
+          _id: req.user.id
+        }, {
+          $push: {
+            studySets: studySet
+          }
+        },
+        function(err) {
           if (err) {
             console.log(err);
           } else {
@@ -262,32 +285,34 @@ app.route("/studyset/:username/:title")
     let author = req.params.username;
     let title = req.params.title;
 
-    User.findOne({ username: author }, function(err, foundUser) {
-        if (err) {
-          console.log(err);
-        } else if (foundUser) {
-          let studySet = foundUser.studySets.filter(obj => {
-            return obj.title === title;
-          });
-          if (studySet.length !== 0) {
-            let deleteAuth = true;
-            let username = "";
-            if (req.isAuthenticated()) {
-              username = req.user.username;
-            }
-            res.render("studyset", {
-              author: author,
-              studySet: studySet[0],
-              username: username
-            });
-
-          } else {
-            res.redirect("/");
+    User.findOne({
+      username: author
+    }, function(err, foundUser) {
+      if (err) {
+        console.log(err);
+      } else if (foundUser) {
+        let studySet = foundUser.studySets.filter(obj => {
+          return obj.title === title;
+        });
+        if (studySet.length !== 0) {
+          let deleteAuth = true;
+          let username = "";
+          if (req.isAuthenticated()) {
+            username = req.user.username;
           }
+          res.render("studyset", {
+            author: author,
+            studySet: studySet[0],
+            username: username
+          });
+
         } else {
           res.redirect("/");
         }
-      });
+      } else {
+        res.redirect("/");
+      }
+    });
   });
 
 // delete studySet handler
@@ -296,9 +321,15 @@ app.post("/delete", function(req, res) {
     if (req.user.username === req.body.username) {
       let setId = mongoose.Types.ObjectId(req.body.studySetId);
       console.log(setId);
-      User.updateOne(
-        { username: req.body.username },
-        { $pull: {studySets: { title: req.body.studySetTitle }}},
+      User.updateOne({
+          username: req.body.username
+        }, {
+          $pull: {
+            studySets: {
+              title: req.body.studySetTitle
+            }
+          }
+        },
         function(err, foundUser) {
           if (err) {
             console.log(err);
