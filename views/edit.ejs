@@ -1,0 +1,134 @@
+<%- include("partials/header") -%>
+
+<br>
+<br>
+<br>
+<form name="setForm" class="container" action="/edit/<%=username%>/<%=studySet.title%>" onsubmit="return validateForm()" method="POST">
+  <h4>Edit Study Set</h4>
+  <br>
+  <div class="mb-3">
+    <label for="exampleFormControlInput1" class="form-label">Title</label>
+    <input type="text" class="form-control" id="titleInput" name="title" placeholder="Enter Title">
+    <h5 class="error-msg" id="titleErrorMsg" style="visibility: hidden">Please enter a title to create your set</h5>
+  </div>
+
+  <div class="mb-3" id="addCardDiv">
+    <button type="button" id="addCardBtn" class="btn btn-primary my-2">Add Card</button>
+  </div>
+
+  <button type="submit" class="btn btn-primary btn-lg">Update Set</button>
+</form>
+
+<br>
+<br>
+
+<script type="text/javascript">
+  // creates the initial studySet
+  let studySet = <%-JSON.stringify(studySet)%>;
+  document.getElementById('titleInput').value = studySet.title;
+  let numCards = 1;
+  while (numCards <= studySet.flashCards.length) {
+    addCard();
+    let termValue = 'term' + (numCards-1);
+    let termDefValue = 'termDef' + (numCards-1);
+    (document.getElementsByName(termValue)[0]).innerHTML = studySet.flashCards[numCards-2].term;
+    (document.getElementsByName(termDefValue)[0]).innerHTML = studySet.flashCards[numCards-2].termDef;
+  }
+
+  // adds an extra empty card
+  function addCard() {
+    let card = document.createElement("div");
+    card.className = "ithCard";
+    card.innerHTML =
+      "<h5>" + numCards + "</h5>" +
+
+      "<div class='mb-3'>" +
+      "<label for='exampleFormControlTextarea1' class='form-label'>Term</label>" +
+      "<textarea name='" + "term" + numCards + "'  class='form-control' id='exampleFormControlTextarea1' rows='1' placeholder='Enter Term'></textarea>" +
+      "<h5 class='error-msg' style='visibility: hidden'>Please enter a term</h5>" +
+      "</div>" +
+
+      "<div class='mb-3'>" +
+      "<label for='exampleFormControlTextarea1' class='form-label'>Definition</label>" +
+      "<textarea name='" + "termDef" + numCards + "'   class='form-control' id='exampleFormControlTextarea1' rows='2' placeholder='Enter Definition'></textarea>" +
+      "<h5 class='error-msg' style='visibility: hidden'>Please enter a definition</h5>" +
+      "</div>";
+
+    let addCardDiv = document.getElementById('addCardDiv');
+    addCardDiv.parentNode.insertBefore(card, addCardDiv);
+    numCards++;
+  };
+
+  // title variable
+  let title = "";
+  // card array of (term, definition) pairs
+  let cardList = [];
+
+  // validates form and puts the terms into a callable array
+  function validateForm() {
+    // reset the global variables for title and card array
+    title = document.getElementById('titleInput').value;
+    cardList = [];
+
+    let validateBool = true;
+
+    // validates title, shows error if no title
+    if (title == "") {
+      document.getElementById("titleErrorMsg").style.visibility = "visible";
+      validateBool = false;
+    } else {
+      document.getElementById("titleErrorMsg").style.visibility = "hidden";
+    }
+
+    // validates term - definition cards
+    // if one part term or definition is empty in a half filled card set, output error
+    // if at least one card is not filled, output error
+    let allCardList = document.getElementsByClassName("ithCard");
+    for (let i = 0; i < allCardList.length; i++) {
+      let cardSet = allCardList[i].getElementsByClassName("form-control");
+      let errorSet = allCardList[i].getElementsByClassName("error-msg");
+      let term = cardSet[0].value;
+      let termDef = cardSet[1].value;
+      let termErr = errorSet[0];
+      let termDefErr = errorSet[1];
+
+      // reset card errors
+      termErr.style.visibility = "hidden";
+      termDefErr.style.visibilty = "hidden";
+
+      console.log(i, term, termDef, cardList.length);
+
+      // checks if the each card has a term and definition
+      if (term != "" && termDef != "") {
+
+        // push this card into the cardList
+        cardList.push({
+          "term": term,
+          "termDef": termDef
+        });
+      } else if (term == "" && termDef != "") {
+        termErr.style.visibility = "visible";
+        validateBool = false;
+      } else if (term != "" && termDef == "") {
+        termDefErr.style.visibility = "visible";
+        validateBool = false;
+      }
+    }
+
+    // error if less than 2 cards are filled out
+    if (cardList.length === 0) {
+      validateBool = false;
+      console.log("needs at least 1 card");
+    } else {
+      validateBool = true;
+    }
+
+    console.log(validateBool);
+
+    return validateBool;
+  };
+
+  document.getElementById("addCardBtn").addEventListener("click", addCard);
+</script>
+
+<%- include("partials/footer") -%>

@@ -22,6 +22,9 @@
           <input type="hidden" name="studySetTitle" value="<%=studySet.title%>">
           <button id="deleteSet" class="btn btn-danger" type="submit">Delete Set</button>
         </form>
+        <a href="/edit/<%=username%>/<%=studySet.title%>">
+          <button type="button" class="btn btn-info" name="editButton">Edit Set</button>
+        </a>
   <% } %>
 </div>
 

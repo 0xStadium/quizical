@@ -265,7 +265,7 @@ app.route("/creation")
           if (err) {
             console.log(err);
           } else {
-            console.log(req.user.id, " Succesfully updated User studyset");
+            console.log(req.user.id, " Succesfully created User studyset");
           }
         });
 
@@ -313,6 +313,78 @@ app.route("/studyset/:username/:title")
         res.redirect("/");
       }
     });
+  })
+  .post(function(req, res) {
+
+  });
+
+// edit studySet handler
+app.route("/edit/:username/:title")
+  .get(function(req, res) {
+    let author = req.params.username;
+    let title = req.params.title;
+    if (req.isAuthenticated() && req.user.username === author) {
+      User.findOne({
+        username: author
+      }, function(err, foundUser) {
+        if (err) {
+          console.log(err);
+        } else if (foundUser) {
+          let studySet = foundUser.studySets.filter(obj => {
+            return obj.title === title;
+          });
+          if (studySet.length !== 0) {
+            res.render("edit", {
+              studySet: studySet[0],
+              username: author
+            });
+          } else {
+            res.redirect("/");
+          }
+        }
+      });
+    } else {
+      res.redirect("/");
+    }
+  })
+  .post(function(req, res) {
+      let author = req.params.username;
+      let prevTitle = req.params.title;
+
+      if (req.isAuthenticated() && req.user.username === author) {
+        let formDataList = Object.values(req.body); // turn the form values into an array
+        const formtitle = formDataList.shift();
+        let cardList = []; // empty array for the term - definition pairs
+        for (let i = 0; i < formDataList.length; i += 2) {
+          if (formDataList[i] != '' && formDataList[i + 1] != '') {
+            cardList.push({
+              "term": formDataList[i],
+              "termDef": formDataList[i + 1]
+            });
+          }
+        }
+
+        // create updated StudySet
+        const studySet = new StudySet({
+          title: formtitle,
+          flashCards: cardList
+        });
+
+        User.updateOne({
+            username: author,
+            "studySets": { "$elemMatch": { "title": prevTitle } }
+          }, {
+            "$set": { "studySets.$": studySet }
+          }, function(err, foundUser) {
+            if (err) {
+              console.log(err);
+            } else if (foundUser) {
+              res.redirect("/");
+            }
+          });
+        } else {
+          res.redirect("/");
+        }
   });
 
 // delete studySet handler
