@@ -1,5 +1,4 @@
 # Quizical
-
 * [App Link](https://quizical-project.herokuapp.com/)
 
 ## App Summary
@@ -15,9 +14,12 @@ Quizical is an application for students who need digital flashcards to study off
 * AAU, I can delete my study sets
 * AAU, I can edit my study sets
 
+## Screenshots
+
+
 ## Technologies Used
 
-* MongodB / Mongoose
+* MongoDB / Mongoose
 * Express
 * Bootstrap
 * Node
