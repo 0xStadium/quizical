@@ -15,7 +15,19 @@ Quizical is an application for students who need digital flashcards to study off
 * AAU, I can edit my study sets
 
 ## Screenshots
+![](screenshots/1.PNG)
 
+![](screenshots/2.PNG)
+
+![](screenshots/3.PNG)
+
+![](screenshots/4.PNG)
+
+![](screenshots/5.PNG)
+
+![](screenshots/6.PNG)
+
+![](screenshots/7.PNG)
 
 ## Technologies Used
 
