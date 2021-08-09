@@ -13,5 +13,15 @@ Quizical is an application for students who need digital flashcards to study off
 * AAU, I can add more flash cards while creating my study set
 * AAU, I can view all my study sets in my account page
 * AAU, I can delete my study sets
+* AAU, I can edit my study sets
 
-## Wireframes
+## Technologies Used
+
+* MongodB / Mongoose
+* Express
+* Bootstrap
+* Node
+* EJS
+* Passport
+* Amazon AWS
+* Heroku
