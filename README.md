@@ -4,6 +4,29 @@
 ## App Summary
 Quizical is an application for students who need digital flashcards to study off of.
 
+## Wireframe
+
+### Home Page
+![](screenshots/Homepage.JPG)
+
+### Login Page
+![](screenshots/Login.JPG)
+
+### Signup Page
+![](screenshots/Signup.JPG)
+
+### Creation Page
+![](screenshots/Creation.JPG)
+
+### Studyset Page
+![](screenshots/Studyset.JPG)
+
+### Latest Page
+![](screenshots/Latest.JPG)
+
+### Edit Page
+![](screenshots/Edit.JPG)
+
 ## User Stories
 * AAU, I can login and logout of my account
 * AAU, I can create a study set of flashcards
@@ -14,31 +37,30 @@ Quizical is an application for students who need digital flashcards to study off
 * AAU, I can delete my study sets
 * AAU, I can edit my study sets
 
-## Screenshots
-![](screenshots/1.PNG)
-
-![](screenshots/2.PNG)
-
-![](screenshots/3.PNG)
-
-![](screenshots/4.PNG)
-
-![](screenshots/5.PNG)
-
-![](screenshots/6.PNG)
-
-![](screenshots/7.PNG)
-
 ## Technologies Used
 
-* MongoDB / Mongoose
-* Express
+* Node Modules
+  * body-parser
+  * dotenv
+  * ejs
+  * express
+  * express-session
+  * mongoose
+  * passport
+  * passport-local-mongoose
+  * request
+* MongoDB Atlas
+* jQuery
 * Bootstrap
-* Node
-* EJS
-* Passport
-* Amazon AWS
 * Heroku
+* GitHub
+
+## Approach
+
+* Started by creating user stories and breaking down the problem into smaller parts
+* There is no Google authentication because I wanted to try it without it (this is unsafe)
+* MongoDB, EJS, Node, and Express were all new to me when developing this project, so I've made some bad practices.
+  * Not implementing a Model View Controller framework to make the code more readable.
 
 ## Improvements
 
