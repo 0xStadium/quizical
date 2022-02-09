@@ -39,3 +39,9 @@ Quizical is an application for students who need digital flashcards to study off
 * Passport
 * Amazon AWS
 * Heroku
+
+## Improvements
+
+Separating the app.js code will greatly improve readability.
+I've realized this after I've coded this project and saw similar model-view-controller framework.
+In my future projects that utilize routing, I will definitely separate them.
