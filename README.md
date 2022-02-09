@@ -43,5 +43,5 @@ Quizical is an application for students who need digital flashcards to study off
 ## Improvements
 
 Separating the app.js code will greatly improve readability.
-I've realized this after I've coded this project and saw similar model-view-controller framework.
+I've realized this after I've coded this project and saw similar model-view-controller projects using the same stack.
 In my future projects that utilize routing, I will definitely separate them.
