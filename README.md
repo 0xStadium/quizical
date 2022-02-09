@@ -1,9 +1,6 @@
 # Quizical
 * [App Link](https://quizical-project.herokuapp.com/)
 
-## App Summary
-Quizical is an application for students who need digital flashcards to study off of.
-
 ## Wireframe
 
 ### Home Page
@@ -27,15 +24,21 @@ Quizical is an application for students who need digital flashcards to study off
 ### Edit Page
 ![](screenshots/Edit.JPG)
 
+## App Summary
+Quizical is an application for students who need digital flashcards to study off of.
+I developed Quizical to learn the Node, Express, MongoDB, and EJS stack.
+
 ## User Stories
-* AAU, I can login and logout of my account
-* AAU, I can create a study set of flashcards
-* AAU, I can title my study set
-* AAU, I can give each flash card a term and definition
-* AAU, I can add more flash cards while creating my study set
-* AAU, I can view all my study sets in my account page
-* AAU, I can delete my study sets
-* AAU, I can edit my study sets
+1. As a user, I can login and logout of my account
+2. As a user, I can create a study set of flashcards
+3. As a user, I can title my study set
+4. As a user, I can give each flash card a term and definition
+5. As a user, I can add more flash cards while creating my study set
+6. As a user, I can view all my study sets in my account page
+7. As a user, I can delete my study sets
+8. As a user, I can edit my study sets
+9. As a user, I can shuffle my study sets while viewing them
+10. As a user, I can click on the flashcard to reveal the other side of the flashcard
 
 ## Technologies Used
 
@@ -58,11 +61,5 @@ Quizical is an application for students who need digital flashcards to study off
 ## Approach
 
 * Started by creating user stories and breaking down the problem into smaller parts
-* There is no Google authentication because I wanted to try it without it (this is unsafe)
 * MongoDB, EJS, Node, and Express were all new to me when developing this project, so I've made some bad practices.
-  * Not implementing a Model View Controller framework to make the code more readable.
-
-## Improvements
-
-Separating the app.js code will greatly improve readability.
-I've realized this after I've coded this project and saw similar model-view-controller projects using the same stack.
+  The biggest offender is not implementing a Model View Controller framework to make the code more readable.
