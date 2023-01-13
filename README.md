@@ -1,6 +1,3 @@
-# Quizical
-* [App Link](https://quizical-project.herokuapp.com/)
-
 ## Wireframe
 
 ### Home Page
