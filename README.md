@@ -1,3 +1,7 @@
+# Quizical
+
+Quizical is an application for students who need digital flashcards to study off of. I developed Quizical to learn the Node, Express, MongoDB, and EJS stack.
+
 ## Wireframe
 
 ### Home Page
@@ -20,10 +24,6 @@
 
 ### Edit Page
 ![](screenshots/Edit.JPG)
-
-## App Summary
-Quizical is an application for students who need digital flashcards to study off of.
-I developed Quizical to learn the Node, Express, MongoDB, and EJS stack.
 
 ## User Stories
 1. As a user, I can login and logout of my account
